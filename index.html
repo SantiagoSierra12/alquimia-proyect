@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>ALQUIMIA⚡️</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
+<style>
+:root {
+  --gold: #C9A84C;
+  --gold-light: #E8C97A;
+  --gold-dim: #8A6A28;
+  --gold-glow: rgba(201,168,76,0.15);
+  --black: #0A0A0A;
+  --black2: #111111;
+  --black3: #1A1A1A;
+  --black4: #242424;
+  --black5: #2E2E2E;
+  --gray: #888;
+  --gray2: #555;
+  --white: #F5F0E8;
+  --white2: #BFB89A;
+  --danger: #C0392B;
+  --success: #27AE60;
+  --radius: 10px;
+  --radius-lg: 16px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { background: #000; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: var(--white); height: 100%; }
+body { display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; }
+
+.phone {
+  width: 100%; max-width: 430px; min-height: 100vh;
+  background: var(--black); position: relative;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+
+/* SCREENS */
+.screen { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+.screen.active { display: flex; }
+
+/* SCROLLABLE BODY */
+.scroll-body { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 80px; }
+.scroll-body::-webkit-scrollbar { display: none; }
+
+/* TOPBAR */
+.topbar {
+  background: var(--black2);
+  border-bottom: 1px solid rgba(201,168,76,0.2);
+  padding: 14px 16px 12px;
+  display: flex; align-items: center; gap: 12px;
+  flex-shrink: 0;
+}
+.topbar-title { font-size: 17px; font-weight: 600; color: var(--white); flex: 1; letter-spacing: 0.02em; }
+.back-btn { background: none; border: none; cursor: pointer; color: var(--gold); font-size: 22px; display: flex; padding: 0; }
+
+/* AVATAR */
+.avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--black4); border: 1px solid var(--gold-dim);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: var(--gold); letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+/* LOGO HEADER */
+.logo-header {
+  background: var(--black);
+  padding: 48px 24px 36px;
+  display: flex; flex-direction: column; align-items: center;
+  border-bottom: 1px solid rgba(201,168,76,0.15);
+}
+.logo-emblem {
+  width: 64px; height: 64px; border-radius: 50%;
+  border: 2px solid var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 16px;
+  box-shadow: 0 0 24px rgba(201,168,76,0.2);
+}
+.logo-emblem i { font-size: 28px; color: var(--gold); }
+.logo-name {
+  font-size: 28px; font-weight: 700; color: var(--gold);
+  letter-spacing: 0.25em; text-transform: uppercase;
+}
+.logo-tagline { font-size: 12px; color: var(--gray); letter-spacing: 0.15em; margin-top: 4px; }
+
+/* CARDS */
+.card {
+  background: var(--black3);
+  border: 1px solid rgba(201,168,76,0.15);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  margin-bottom: 12px;
+}
+.card-dark { background: var(--black2); }
+
+/* INPUTS */
+input, select, textarea {
+  width: 100%; padding: 12px 14px;
+  background: var(--black4); border: 1px solid var(--black5);
+  border-radius: var(--radius); color: var(--white);
+  font-size: 15px; font-family: inherit; outline: none;
+  transition: border-color 0.2s;
+  margin-bottom: 12px;
+}
+input:focus, select:focus { border-color: var(--gold-dim); }
+input::placeholder { color: var(--gray2); }
+select option { background: var(--black3); }
+
+label.field-label { display: block; font-size: 11px; color: var(--gray); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 5px; }
+
+/* BUTTONS */
+.btn-primary {
+  width: 100%; padding: 14px;
+  background: var(--gold); border: none; border-radius: var(--radius);
+  color: var(--black); font-size: 15px; font-weight: 700;
+  letter-spacing: 0.05em; cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.btn-primary:active { opacity: 0.85; transform: scale(0.98); }
+.btn-secondary {
+  padding: 9px 16px;
+  background: transparent; border: 1px solid rgba(201,168,76,0.4);
+  border-radius: var(--radius); color: var(--gold);
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: background 0.15s;
+}
+.btn-secondary:active { background: var(--gold-glow); }
+.btn-icon {
+  background: none; border: none; cursor: pointer;
+  color: var(--gold); font-size: 20px; display: flex; align-items: center; padding: 4px;
+}
+.btn-small {
+  padding: 6px 12px; font-size: 12px; font-weight: 600;
+  background: var(--black4); border: 1px solid var(--black5);
+  border-radius: 8px; color: var(--white2); cursor: pointer;
+}
+.btn-small:active { background: var(--black5); }
+
+/* CHIPS */
+.chip {
+  display: inline-block; padding: 3px 10px;
+  border-radius: 20px; font-size: 11px; font-weight: 600;
+  letter-spacing: 0.05em; border: 1px solid rgba(201,168,76,0.3);
+  background: rgba(201,168,76,0.08); color: var(--gold);
+}
+
+/* SECTION TITLE */
+.section-label {
+  font-size: 11px; font-weight: 700; color: var(--gold-dim);
+  letter-spacing: 0.12em; text-transform: uppercase;
+  margin-bottom: 10px; margin-top: 4px;
+}
+
+/* STAT CARDS */
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.stat-card {
+  background: var(--black3); border: 1px solid rgba(201,168,76,0.15);
+  border-radius: var(--radius); padding: 14px 12px;
+}
+.stat-n { font-size: 26px; font-weight: 700; color: var(--gold); }
+.stat-l { font-size: 11px; color: var(--gray); margin-top: 2px; }
+
+/* ALUMNO LIST ITEM */
+.alumno-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+  cursor: pointer;
+}
+.alumno-item:last-child { border-bottom: none; }
+.alumno-item:active { opacity: 0.7; }
+
+/* ERROR */
+.error-msg { font-size: 12px; color: #E74C3C; margin-bottom: 8px; }
+
+/* DIVIDER */
+.divider { height: 1px; background: rgba(255,255,255,0.06); margin: 4px 0 16px; }
+
+/* TABBAR */
+.tab-bar {
+  display: flex; background: var(--black2);
+  border-top: 1px solid rgba(201,168,76,0.2);
+  flex-shrink: 0;
+}
+.tab {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  padding: 9px 4px 7px; cursor: pointer; gap: 3px;
+  color: var(--gray); font-size: 10px; border: none; background: none;
+  letter-spacing: 0.04em;
+}
+.tab i { font-size: 20px; }
+.tab.active { color: var(--gold); }
+
+/* DAYS SCROLL */
+.days-scroll {
+  display: flex; gap: 8px; overflow-x: auto;
+  padding-bottom: 4px; margin-bottom: 16px;
+  scrollbar-width: none;
+}
+.days-scroll::-webkit-scrollbar { display: none; }
+.day-btn {
+  padding: 8px 14px; border-radius: var(--radius);
+  border: 1px solid var(--black5);
+  background: var(--black3); cursor: pointer;
+  font-size: 13px; color: var(--gray); white-space: nowrap;
+  font-weight: 500; transition: all 0.15s;
+}
+.day-btn.active {
+  background: rgba(201,168,76,0.12);
+  color: var(--gold); border-color: var(--gold-dim);
+}
+
+/* EXERCISE CARD */
+.ex-card {
+  background: var(--black3); border: 1px solid rgba(201,168,76,0.1);
+  border-radius: var(--radius-lg); margin-bottom: 12px; overflow: hidden;
+}
+.ex-header {
+  padding: 14px 16px 10px; display: flex; align-items: flex-start; gap: 10px;
+}
+.ex-num {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: rgba(201,168,76,0.1); border: 1px solid var(--gold-dim);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: var(--gold); flex-shrink: 0; margin-top: 1px;
+}
+.ex-name { font-size: 15px; font-weight: 600; color: var(--white); }
+.ex-sub { font-size: 12px; color: var(--gray); margin-top: 2px; }
+.ex-note { font-size: 12px; color: var(--white2); margin-top: 4px; font-style: italic; }
+.ex-meta {
+  display: flex; gap: 10px; margin-top: 6px;
+}
+.ex-meta-badge {
+  background: var(--black4); border-radius: 6px; padding: 4px 10px;
+  font-size: 12px; color: var(--white2);
+}
+.ex-meta-badge span { color: var(--gold); font-weight: 700; }
+
+/* VIDEO SECTION */
+.video-section { padding: 0 16px 12px; }
+.video-toggle {
+  display: flex; align-items: center; gap: 6px;
+  background: none; border: none; cursor: pointer;
+  color: var(--gold-dim); font-size: 12px; font-weight: 600;
+  letter-spacing: 0.05em; padding: 0;
+}
+.video-toggle i { font-size: 16px; }
+.video-embed {
+  margin-top: 10px; border-radius: var(--radius);
+  overflow: hidden; display: none;
+  background: var(--black2); border: 1px solid rgba(201,168,76,0.15);
+}
+.video-embed.open { display: block; }
+.video-embed iframe { width: 100%; height: 200px; border: none; display: block; }
+.muscle-tags { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 12px; background: var(--black4); }
+
+/* SERIES TRACKING */
+.series-section { padding: 0 16px 14px; }
+.series-table-header {
+  display: grid; grid-template-columns: 36px 1fr 1fr 1fr;
+  gap: 6px; margin-bottom: 6px;
+}
+.series-col-label { font-size: 10px; color: var(--gray); text-align: center; font-weight: 600; letter-spacing: 0.06em; }
+.series-row {
+  display: grid; grid-template-columns: 36px 1fr 1fr 1fr;
+  gap: 6px; margin-bottom: 6px; align-items: center;
+}
+.series-num {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--black5); border: 1px solid var(--black5);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: var(--gray);
+  transition: all 0.2s;
+}
+.series-num.done { background: rgba(201,168,76,0.15); border-color: var(--gold-dim); color: var(--gold); }
+.series-input {
+  padding: 7px 8px; background: var(--black4); border: 1px solid var(--black5);
+  border-radius: 8px; color: var(--white); font-size: 13px; text-align: center;
+  font-family: inherit; outline: none; transition: border-color 0.2s;
+  margin: 0; width: 100%;
+}
+.series-input:focus { border-color: var(--gold-dim); }
+.series-input.filled { border-color: rgba(201,168,76,0.4); color: var(--gold); }
+.done-btn {
+  width: 30px; height: 30px; border-radius: 8px;
+  border: 1px solid var(--black5); background: var(--black4);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  color: var(--gray); font-size: 16px; transition: all 0.2s;
+}
+.done-btn.checked { background: rgba(201,168,76,0.15); border-color: var(--gold-dim); color: var(--gold); }
+
+/* MODAL */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+  display: none; align-items: flex-end; z-index: 100;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.open { display: flex; }
+.modal-sheet {
+  background: var(--black2);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-bottom: none;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  padding: 20px 18px 36px; width: 100%;
+  max-height: 85vh; overflow-y: auto;
+}
+.modal-handle { width: 36px; height: 3px; background: var(--black5); border-radius: 2px; margin: 0 auto 18px; }
+.modal-title { font-size: 18px; font-weight: 700; color: var(--white); margin-bottom: 16px; }
+
+/* PROGRESS BAR */
+.prog-bar { height: 3px; background: var(--black5); border-radius: 2px; margin-top: 8px; }
+.prog-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--gold-dim), var(--gold)); }
+
+/* COACH HISTORY */
+.history-entry {
+  background: var(--black3); border: 1px solid rgba(201,168,76,0.1);
+  border-radius: var(--radius); padding: 12px 14px; margin-bottom: 10px;
+}
+.history-date { font-size: 11px; color: var(--gold-dim); margin-bottom: 6px; font-weight: 600; letter-spacing: 0.05em; }
+.history-row { display: flex; justify-content: space-between; font-size: 13px; padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.history-row:last-child { border-bottom: none; }
+
+.content-pad { padding: 16px; }
+.row { display: flex; align-items: center; justify-content: space-between; }
+.row-gap { display: flex; align-items: center; gap: 10px; }
+</style>
+</head>
+<body>
+<div class="phone" id="phone">
+
+<!-- ═══════════════════════════════════════ LOGIN ═══ -->
+<div class="screen active" id="screen-login">
+  <div class="logo-header">
+    <div class="logo-emblem">
+      <i class="ti ti-flame"></i>
+    </div>
+    <div class="logo-name">Alquimia</div>
+    <div class="logo-tagline">Transforma tu cuerpo · Eleva tu mente</div>
+  </div>
+  <div class="scroll-body" style="padding-bottom:24px;">
+    <div class="content-pad">
+      <div class="card" style="margin-top:8px;">
+        <p class="section-label" style="margin-bottom:14px;">Acceder</p>
+        <label class="field-label">Usuario</label>
+        <input type="text" id="login-user" placeholder="tu_usuario" autocomplete="username" />
+        <label class="field-label">Contraseña</label>
+        <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password" />
+        <p class="error-msg" id="login-error" style="display:none;">Usuario o contraseña incorrectos.</p>
+        <button class="btn-primary" onclick="doLogin()">Ingresar</button>
+      </div>
+      <p style="text-align:center;font-size:12px;color:var(--gray);margin-top:10px;">
+        ¿Entrenador? <span style="color:var(--gold);cursor:pointer;font-weight:600;" onclick="fillCoach()">Acceso coach</span>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ COACH ═══ -->
+<div class="screen" id="screen-coach">
+  <div class="topbar">
+    <div class="avatar">JL</div>
+    <span class="topbar-title">Panel coach</span>
+    <button class="btn-secondary" onclick="logout()" style="padding:6px 12px;font-size:12px;">Salir</button>
+  </div>
+  <div class="scroll-body">
+    <div class="content-pad" id="coach-main">
+      <div class="stat-grid" id="coach-stats"></div>
+      <div class="row" style="margin-bottom:12px;">
+        <p class="section-label" style="margin:0;">Alumnos</p>
+        <button class="btn-secondary" onclick="openModal('modal-add-alumno')" style="padding:7px 14px;font-size:12px;">
+          <i class="ti ti-plus" style="font-size:14px;vertical-align:-2px;"></i> Nuevo
+        </button>
+      </div>
+      <div class="card card-dark" style="padding:0 18px;" id="alumnos-list"></div>
+    </div>
+  </div>
+  <div class="tab-bar">
+    <button class="tab active" id="tab-coach-alu" onclick="coachTab('alu')"><i class="ti ti-users"></i>Alumnos</button>
+    <button class="tab" id="tab-coach-hist" onclick="coachTab('hist')"><i class="ti ti-chart-line"></i>Progreso</button>
+    <button class="tab" id="tab-coach-creds" onclick="coachTab('creds')"><i class="ti ti-key"></i>Accesos</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ COACH – ALUMNO DETAIL ═══ -->
+<div class="screen" id="screen-alumno-detail">
+  <div class="topbar">
+    <button class="back-btn" onclick="goScreen('screen-coach')"><i class="ti ti-arrow-left"></i></button>
+    <span class="topbar-title" id="detail-title">Alumno</span>
+    <button class="btn-secondary" onclick="openAddRutina()" style="padding:7px 14px;font-size:12px;">
+      <i class="ti ti-plus" style="font-size:14px;vertical-align:-2px;"></i> Ejercicio
+    </button>
+  </div>
+  <div class="scroll-body">
+    <div class="content-pad">
+      <div class="card" id="detail-info-card"></div>
+      <div class="divider"></div>
+      <p class="section-label">Rutinas asignadas</p>
+      <div id="detail-rutinas-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ ALUMNO ═══ -->
+<div class="screen" id="screen-alumno">
+  <div class="topbar">
+    <div class="avatar" id="alu-av">--</div>
+    <span class="topbar-title" id="alu-name-top">Mi rutina</span>
+    <button class="btn-secondary" onclick="logout()" style="padding:6px 12px;font-size:12px;">Salir</button>
+  </div>
+  <div class="scroll-body">
+    <div class="content-pad">
+      <div class="days-scroll" id="days-scroll"></div>
+      <div id="alu-rutina"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ MODALS ═══ -->
+
+<!-- ADD ALUMNO -->
+<div class="modal-overlay" id="modal-add-alumno">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="row" style="margin-bottom:16px;">
+      <p class="modal-title" style="margin:0;">Nuevo alumno</p>
+      <button class="btn-icon" onclick="closeModal('modal-add-alumno')"><i class="ti ti-x"></i></button>
+    </div>
+    <label class="field-label">Nombre completo</label>
+    <input type="text" id="new-nombre" placeholder="Ej: Carlos Pérez" />
+    <label class="field-label">Usuario</label>
+    <input type="text" id="new-user" placeholder="carlos.perez" />
+    <label class="field-label">Contraseña</label>
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">
+      <input type="text" id="new-pass" placeholder="Auto-generada" style="margin:0;flex:1;" />
+      <button class="btn-small" onclick="genPass()" style="white-space:nowrap;"><i class="ti ti-refresh" style="vertical-align:-2px;font-size:13px;"></i> Generar</button>
+    </div>
+    <label class="field-label">Días de entrenamiento</label>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;" id="dias-selector">
+      <button class="day-btn" onclick="toggleDia(this)">Lun</button>
+      <button class="day-btn" onclick="toggleDia(this)">Mar</button>
+      <button class="day-btn" onclick="toggleDia(this)">Mié</button>
+      <button class="day-btn" onclick="toggleDia(this)">Jue</button>
+      <button class="day-btn" onclick="toggleDia(this)">Vie</button>
+      <button class="day-btn" onclick="toggleDia(this)">Sáb</button>
+      <button class="day-btn" onclick="toggleDia(this)">Dom</button>
+    </div>
+    <button class="btn-primary" onclick="addAlumno()">Crear alumno</button>
+  </div>
+</div>
+
+<!-- ADD RUTINA -->
+<div class="modal-overlay" id="modal-add-rutina">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="row" style="margin-bottom:16px;">
+      <p class="modal-title" style="margin:0;">Agregar ejercicio</p>
+      <button class="btn-icon" onclick="closeModal('modal-add-rutina')"><i class="ti ti-x"></i></button>
+    </div>
+    <label class="field-label">Día</label>
+    <select id="rut-dia">
+      <option>Lunes</option><option>Martes</option><option>Miércoles</option>
+      <option>Jueves</option><option>Viernes</option><option>Sábado</option><option>Domingo</option>
+    </select>
+    <label class="field-label">Grupo muscular</label>
+    <select id="rut-grupo">
+      <option>Pecho</option><option>Espalda</option><option>Hombros</option>
+      <option>Bíceps</option><option>Tríceps</option><option>Piernas</option>
+      <option>Glúteos</option><option>Abdomen</option><option>Full body</option>
+    </select>
+    <label class="field-label">Ejercicio</label>
+    <input type="text" id="rut-ejercicio" placeholder="Ej: Press de banca" />
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+      <div><label class="field-label">Series</label><input type="number" id="rut-series" placeholder="4" style="margin:0;" /></div>
+      <div><label class="field-label">Reps objetivo</label><input type="number" id="rut-reps" placeholder="12" style="margin:0;" /></div>
+      <div><label class="field-label">Peso (kg)</label><input type="number" id="rut-peso" placeholder="60" style="margin:0;" /></div>
+    </div>
+    <label class="field-label" style="margin-top:12px;">Video YouTube (ID o URL)</label>
+    <input type="text" id="rut-video" placeholder="Ej: dQw4w9WgXcQ" />
+    <label class="field-label">Notas para el alumno</label>
+    <input type="text" id="rut-notas" placeholder="Ej: Bajar lento en negativa" />
+    <button class="btn-primary" style="margin-top:4px;" onclick="addRutina()">Guardar ejercicio</button>
+  </div>
+</div>
+
+</div><!-- /phone -->
+
+<script>
+// ═══════ DATA ═══════
+const diasSemana = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+const hoy = diasSemana[new Date().getDay()];
+
+const COACH = { user:'coach', pass:'coach123', nombre:'Jorge López' };
+
+// YouTube IDs reales por ejercicio
+const videoMap = {
+  'press de banca': 'rT7DgCr-3pg',
+  'aperturas con mancuerna': 'eozdVDA78K0',
+  'remo con barra': 'kBWAon7ItDw',
+  'press militar': 'qEwKCR5JCog',
+  'sentadilla libre': 'ultWZbUMPL8',
+  'extensión de cuádriceps': 'YyvSfVjQeL0',
+  'dominadas': 'eGo4IYlbE5g',
+  'hip thrust': 'SEdqd1n0cvg',
+  'sentadilla búlgara': 'HerrXq79pB4',
+  'curl de bíceps': 'ykJmrZ5v0Oo',
+  'press francés': 'd_KZxkY_0cM',
+  'peso muerto': 'op9kVnSso6Q',
+  'plancha': 'B296mZDhrP4',
+  'abdominales': 'Xyd_fa5zoEU',
+  'pull-over': 'y2RCGm7dCnE',
+};
+
+const muscleMap = {
+  'Pecho':['Pectoral mayor','Pectoral menor','Tríceps','Deltoides anterior'],
+  'Espalda':['Dorsal ancho','Trapecio','Romboides','Bíceps'],
+  'Hombros':['Deltoides anterior','Deltoides medio','Deltoides posterior'],
+  'Bíceps':['Bíceps braquial','Braquial','Braquiorradial'],
+  'Tríceps':['Tríceps braquial (3 cabezas)','Ancóneo'],
+  'Piernas':['Cuádriceps','Isquiotibiales','Glúteo mayor','Gemelos'],
+  'Glúteos':['Glúteo mayor','Glúteo medio','Glúteo menor','Isquiotibiales'],
+  'Abdomen':['Recto abdominal','Oblicuos','Transverso','Serrato'],
+  'Full body':['Cuerpo completo – múltiples grupos'],
+};
+
+let state = {
+  alumnos:[
+    {id:1,nombre:'Ana Gómez',user:'ana.g',pass:'Ana2024!',dias:['Lunes','Miércoles','Viernes']},
+    {id:2,nombre:'Matías Ruiz',user:'mati.r',pass:'Mati1234',dias:['Martes','Jueves','Sábado']},
+    {id:3,nombre:'Lucía Torres',user:'luci.t',pass:'Luci2024',dias:['Lunes','Miércoles','Viernes']},
+  ],
+  rutinas:[
+    {id:1,alumnoId:1,dia:'Lunes',grupo:'Pecho',ejercicio:'Press de banca',series:4,reps:12,peso:40,notas:'Bajar lento en negativa',video:'rT7DgCr-3pg'},
+    {id:2,alumnoId:1,dia:'Lunes',grupo:'Pecho',ejercicio:'Aperturas con mancuerna',series:3,reps:15,peso:10,notas:'',video:'eozdVDA78K0'},
+    {id:3,alumnoId:1,dia:'Miércoles',grupo:'Espalda',ejercicio:'Remo con barra',series:4,reps:10,peso:35,notas:'',video:'kBWAon7ItDw'},
+    {id:4,alumnoId:1,dia:'Viernes',grupo:'Hombros',ejercicio:'Press militar',series:4,reps:10,peso:25,notas:'',video:'qEwKCR5JCog'},
+    {id:5,alumnoId:2,dia:'Martes',grupo:'Piernas',ejercicio:'Sentadilla libre',series:5,reps:8,peso:70,notas:'Profundidad completa',video:'ultWZbUMPL8'},
+    {id:6,alumnoId:2,dia:'Martes',grupo:'Piernas',ejercicio:'Extensión de cuádriceps',series:3,reps:15,peso:30,notas:'',video:'YyvSfVjQeL0'},
+    {id:7,alumnoId:2,dia:'Jueves',grupo:'Espalda',ejercicio:'Dominadas',series:4,reps:8,peso:0,notas:'Peso corporal',video:'eGo4IYlbE5g'},
+    {id:8,alumnoId:3,dia:'Lunes',grupo:'Glúteos',ejercicio:'Hip thrust',series:4,reps:15,peso:50,notas:'',video:'SEdqd1n0cvg'},
+    {id:9,alumnoId:3,dia:'Miércoles',grupo:'Piernas',ejercicio:'Sentadilla búlgara',series:3,reps:12,peso:20,notas:'',video:'HerrXq79pB4'},
+  ],
+  // logs: { 'alumnoId_rutinaId_fecha': [{serie:1, reps:12, peso:40, done:true}, ...] }
+  logs:{},
+  currentAlumnoId: null,
+  currentAluObj: null,
+  selectedDay: hoy,
+};
+
+let nextRutId = 10, nextAluId = 4;
+
+// ═══════ NAV ═══════
+function goScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ═══════ LOGIN ═══════
+function doLogin() {
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value.trim();
+  document.getElementById('login-error').style.display = 'none';
+  if (u === COACH.user && p === COACH.pass) { renderCoach(); goScreen('screen-coach'); return; }
+  const alu = state.alumnos.find(a => a.user===u && a.pass===p);
+  if (alu) { startAlumnoSession(alu); return; }
+  document.getElementById('login-error').style.display = 'block';
+}
+function fillCoach() {
+  document.getElementById('login-user').value='coach';
+  document.getElementById('login-pass').value='coach123';
+}
+function logout() {
+  document.getElementById('login-user').value='';
+  document.getElementById('login-pass').value='';
+  goScreen('screen-login');
+}
+
+// ═══════ COACH PANEL ═══════
+function renderCoach() {
+  document.getElementById('coach-stats').innerHTML = `
+    <div class="stat-card"><div class="stat-n">${state.alumnos.length}</div><div class="stat-l">Alumnos activos</div></div>
+    <div class="stat-card"><div class="stat-n">${state.rutinas.length}</div><div class="stat-l">Ejercicios cargados</div></div>
+  `;
+  document.getElementById('alumnos-list').innerHTML = state.alumnos.map(a => {
+    const ruts = state.rutinas.filter(r=>r.alumnoId===a.id).length;
+    const logs = Object.keys(state.logs).filter(k=>k.startsWith(a.id+'_')).length;
+    const ini = a.nombre.split(' ').map(n=>n[0]).join('').slice(0,2);
+    return `<div class="alumno-item" onclick="openAlumnoDetail(${a.id})">
+      <div class="avatar">${ini}</div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:600;color:var(--white);">${a.nombre}</div>
+        <div style="font-size:12px;color:var(--gray);">@${a.user} · ${ruts} ejercicios · ${logs} registros</div>
+      </div>
+      <i class="ti ti-chevron-right" style="color:var(--gold-dim);font-size:16px;"></i>
+    </div>`;
+  }).join('');
+}
+
+function coachTab(tab) {
+  ['alu','hist','creds'].forEach(t => document.getElementById('tab-coach-'+t).classList.remove('active'));
+  document.getElementById('tab-coach-'+tab).classList.add('active');
+  const main = document.getElementById('coach-main');
+  if (tab==='alu') { renderCoach(); return; }
+  if (tab==='hist') {
+    renderCoach();
+    let histHTML = '';
+    state.alumnos.forEach(a => {
+      const keys = Object.keys(state.logs).filter(k=>k.startsWith(a.id+'_'));
+      if (!keys.length) return;
+      histHTML += `<p class="section-label" style="margin-top:8px;">${a.nombre}</p>`;
+      keys.forEach(k => {
+        const [,rutId,fecha] = k.split('_');
+        const rut = state.rutinas.find(r=>r.id==rutId);
+        if (!rut) return;
+        const serLog = state.logs[k];
+        histHTML += `<div class="history-entry">
+          <div class="history-date">${rut.ejercicio} — ${fecha}</div>
+          ${serLog.map((s,i)=>s.done?`<div class="history-row"><span>Serie ${i+1}</span><span style="color:var(--white2);">${s.reps} reps · ${s.peso} kg</span></div>`:'').join('')}
+        </div>`;
+      });
+    });
+    document.getElementById('coach-main').innerHTML = `
+      <div class="stat-grid" id="coach-stats"></div>
+      <p class="section-label">Historial de alumnos</p>
+      ${histHTML||'<p style="font-size:13px;color:var(--gray);">Aún no hay registros de entrenamiento.</p>'}
+    `;
+    document.getElementById('coach-stats').innerHTML = `
+      <div class="stat-card"><div class="stat-n">${state.alumnos.length}</div><div class="stat-l">Alumnos</div></div>
+      <div class="stat-card"><div class="stat-n">${Object.keys(state.logs).length}</div><div class="stat-l">Sesiones registradas</div></div>
+    `;
+    return;
+  }
+  if (tab==='creds') {
+    document.getElementById('coach-main').innerHTML = `
+      <div class="stat-grid" id="coach-stats">
+        <div class="stat-card"><div class="stat-n">${state.alumnos.length}</div><div class="stat-l">Alumnos</div></div>
+        <div class="stat-card"><div class="stat-n">${state.rutinas.length}</div><div class="stat-l">Ejercicios</div></div>
+      </div>
+      <div class="row" style="margin-bottom:12px;">
+        <p class="section-label" style="margin:0;">Credenciales</p>
+        <button class="btn-secondary" onclick="openModal('modal-add-alumno')" style="padding:7px 14px;font-size:12px;"><i class="ti ti-plus" style="font-size:14px;vertical-align:-2px;"></i> Nuevo</button>
+      </div>
+      ${state.alumnos.map(a=>`
+        <div class="card card-dark" style="margin-bottom:10px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <div class="avatar">${a.nombre.split(' ').map(n=>n[0]).join('').slice(0,2)}</div>
+            <span style="font-size:14px;font-weight:600;">${a.nombre}</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div><p class="section-label" style="margin-bottom:2px;">Usuario</p><p style="font-size:13px;color:var(--gold);">@${a.user}</p></div>
+            <div><p class="section-label" style="margin-bottom:2px;">Contraseña</p><p style="font-size:13px;color:var(--white2);font-family:monospace;">${a.pass}</p></div>
+          </div>
+        </div>
+      `).join('')}
+    `;
+  }
+}
+
+// ═══════ ALUMNO DETAIL (coach view) ═══════
+function openAlumnoDetail(id) {
+  state.currentAlumnoId = id;
+  const a = state.alumnos.find(x=>x.id===id);
+  document.getElementById('detail-title').textContent = a.nombre;
+  document.getElementById('detail-info-card').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px;">
+      <div><p class="section-label" style="margin-bottom:3px;">Usuario</p><p style="font-size:14px;color:var(--gold);">@${a.user}</p></div>
+      <div><p class="section-label" style="margin-bottom:3px;">Contraseña</p><p style="font-size:13px;color:var(--white2);font-family:monospace;">${a.pass}</p></div>
+    </div>
+    <div><p class="section-label" style="margin-bottom:5px;">Días</p>${a.dias.map(d=>`<span class="chip" style="margin-right:4px;margin-bottom:4px;">${d}</span>`).join('')}</div>
+  `;
+  renderDetailRutinas(a);
+  goScreen('screen-alumno-detail');
+}
+
+function renderDetailRutinas(a) {
+  const ruts = state.rutinas.filter(r=>r.alumnoId===a.id);
+  const cont = document.getElementById('detail-rutinas-list');
+  if (!ruts.length) { cont.innerHTML='<p style="font-size:13px;color:var(--gray);">Sin ejercicios. Usá + Ejercicio para agregar.</p>'; return; }
+  const byDia = {};
+  ruts.forEach(r=>{ if(!byDia[r.dia]) byDia[r.dia]=[]; byDia[r.dia].push(r); });
+  cont.innerHTML = Object.entries(byDia).map(([dia,exs])=>`
+    <p class="section-label" style="margin-top:4px;">${dia} · <span style="color:var(--white2);text-transform:none;font-size:12px;">${exs[0].grupo}</span></p>
+    ${exs.map(e=>`<div class="ex-card">
+      <div class="ex-header">
+        <div>
+          <div class="ex-name">${e.ejercicio}</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
+            <div class="ex-meta-badge"><span>${e.series}</span> series</div>
+            <div class="ex-meta-badge"><span>${e.reps}</span> reps</div>
+            <div class="ex-meta-badge"><span>${e.peso||'PC'}</span>${e.peso?' kg':''}</div>
+          </div>
+          ${e.notas?`<div class="ex-note" style="margin-top:6px;">${e.notas}</div>`:''}
+        </div>
+      </div>
+    </div>`).join('')}
+  `).join('');
+}
+
+// ═══════ ALUMNO SESSION ═══════
+function startAlumnoSession(alu) {
+  state.currentAluObj = alu;
+  state.selectedDay = alu.dias.includes(hoy) ? hoy : alu.dias[0];
+  const ini = alu.nombre.split(' ').map(n=>n[0]).join('').slice(0,2);
+  document.getElementById('alu-av').textContent = ini;
+  document.getElementById('alu-name-top').textContent = alu.nombre.split(' ')[0];
+  renderDays(alu);
+  renderAluRutina(alu, state.selectedDay);
+  goScreen('screen-alumno');
+}
+
+function renderDays(alu) {
+  document.getElementById('days-scroll').innerHTML = alu.dias.map(d=>`
+    <button class="day-btn${d===state.selectedDay?' active':''}" onclick="selectDay('${d}',this)">${d.slice(0,3)}</button>
+  `).join('');
+}
+
+function selectDay(dia, btn) {
+  state.selectedDay = dia;
+  document.querySelectorAll('.day-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAluRutina(state.currentAluObj, dia);
+}
+
+function getLogKey(alumnoId, rutId) {
+  const hoyStr = new Date().toLocaleDateString('es-AR');
+  return `${alumnoId}_${rutId}_${hoyStr}`;
+}
+
+function initLog(alumnoId, rut) {
+  const key = getLogKey(alumnoId, rut.id);
+  if (!state.logs[key]) {
+    state.logs[key] = Array.from({length:rut.series},(_,i)=>({serie:i+1,reps:rut.reps,peso:rut.peso||0,done:false}));
+  }
+  return key;
+}
+
+function renderAluRutina(alu, dia) {
+  const ruts = state.rutinas.filter(r=>r.alumnoId===alu.id && r.dia===dia);
+  const cont = document.getElementById('alu-rutina');
+  if (!ruts.length) {
+    cont.innerHTML=`<div class="card" style="text-align:center;padding:40px 20px;">
+      <i class="ti ti-moon-stars" style="font-size:36px;color:var(--gray);"></i>
+      <p style="font-size:14px;color:var(--gray);margin-top:12px;">Sin rutina para ${dia}.</p>
+      <p style="font-size:12px;color:var(--gray2);margin-top:6px;">Tu entrenador aún no asignó ejercicios para este día.</p>
+    </div>`;
+    return;
+  }
+  const grupo = ruts[0].grupo;
+  const muscles = muscleMap[grupo]||[];
+  cont.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <span class="chip" style="font-size:13px;padding:5px 14px;">${grupo}</span>
+      <span style="font-size:12px;color:var(--gray);">${ruts.length} ejercicio${ruts.length>1?'s':''}</span>
+    </div>
+    ${ruts.map((rut,idx)=>renderExCard(alu,rut,idx)).join('')}
+  `;
+}
+
+function renderExCard(alu, rut, idx) {
+  const key = initLog(alu.id, rut);
+  const log = state.logs[key];
+  const vidId = rut.video || videoMap[rut.ejercicio.toLowerCase()] || '';
+  const muscles = muscleMap[rut.grupo]||[];
+  const done = log.filter(s=>s.done).length;
+  const pct = Math.round((done/rut.series)*100);
+
+  const seriesRows = log.map((s,i)=>`
+    <div class="series-row" id="srow_${rut.id}_${i}">
+      <div class="series-num${s.done?' done':''}" id="snum_${rut.id}_${i}">${i+1}</div>
+      <input class="series-input${s.done?' filled':''}" type="number" id="sreps_${rut.id}_${i}"
+        value="${s.reps}" min="0" placeholder="${rut.reps}"
+        oninput="updateLog(${alu.id},${rut.id},${i},'reps',this.value)" />
+      <input class="series-input${s.done?' filled':''}" type="number" id="speso_${rut.id}_${i}"
+        value="${s.peso}" min="0" placeholder="${rut.peso}"
+        oninput="updateLog(${alu.id},${rut.id},${i},'peso',this.value)" />
+      <button class="done-btn${s.done?' checked':''}" id="sdone_${rut.id}_${i}"
+        onclick="toggleSeriesDone(${alu.id},${rut.id},${i})">
+        <i class="ti ti-check"></i>
+      </button>
+    </div>
+  `).join('');
+
+  return `<div class="ex-card" id="excard_${rut.id}">
+    <div class="ex-header">
+      <div class="ex-num">${idx+1}</div>
+      <div style="flex:1;">
+        <div class="ex-name">${rut.ejercicio}</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
+          <div class="ex-meta-badge"><span>${rut.series}</span> series</div>
+          <div class="ex-meta-badge"><span>${rut.reps}</span> reps obj.</div>
+          <div class="ex-meta-badge"><span>${rut.peso||'PC'}</span>${rut.peso?' kg':''}</div>
+        </div>
+        ${rut.notas?`<div class="ex-note" style="margin-top:6px;">${rut.notas}</div>`:''}
+        <div class="prog-bar" style="margin-top:8px;">
+          <div class="prog-fill" id="prog_${rut.id}" style="width:${pct}%;"></div>
+        </div>
+      </div>
+    </div>
+
+    ${vidId?`
+    <div class="video-section">
+      <button class="video-toggle" onclick="toggleVideo(${rut.id})">
+        <i class="ti ti-brand-youtube"></i> Ver técnica del ejercicio
+        <i class="ti ti-chevron-down" id="vchev_${rut.id}"></i>
+      </button>
+      <div class="video-embed" id="vid_${rut.id}">
+        <iframe src="https://www.youtube.com/embed/${vidId}?rel=0&modestbranding=1"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen></iframe>
+        <div class="muscle-tags">
+          ${muscles.map(m=>`<span class="chip" style="font-size:10px;padding:2px 8px;color:var(--white2);border-color:rgba(201,168,76,0.2);">${m}</span>`).join('')}
+        </div>
+      </div>
+    </div>
+    `:''}
+
+    <div class="series-section">
+      <div class="series-table-header">
+        <div class="series-col-label">Serie</div>
+        <div class="series-col-label">Reps</div>
+        <div class="series-col-label">Peso kg</div>
+        <div class="series-col-label">✓</div>
+      </div>
+      ${seriesRows}
+    </div>
+  </div>`;
+}
+
+function toggleVideo(rutId) {
+  const el = document.getElementById('vid_'+rutId);
+  const chev = document.getElementById('vchev_'+rutId);
+  el.classList.toggle('open');
+  chev.className = el.classList.contains('open') ? 'ti ti-chevron-up' : 'ti ti-chevron-down';
+}
+
+function updateLog(aluId, rutId, serieIdx, field, val) {
+  const key = getLogKey(aluId, rutId);
+  if (!state.logs[key]) return;
+  state.logs[key][serieIdx][field] = parseFloat(val)||0;
+}
+
+function toggleSeriesDone(aluId, rutId, serieIdx) {
+  const key = getLogKey(aluId, rutId);
+  const s = state.logs[key][serieIdx];
+  s.reps = parseFloat(document.getElementById(`sreps_${rutId}_${serieIdx}`).value)||s.reps;
+  s.peso = parseFloat(document.getElementById(`speso_${rutId}_${serieIdx}`).value)||s.peso;
+  s.done = !s.done;
+
+  const doneBtn = document.getElementById(`sdone_${rutId}_${serieIdx}`);
+  const snum = document.getElementById(`snum_${rutId}_${serieIdx}`);
+  const sreps = document.getElementById(`sreps_${rutId}_${serieIdx}`);
+  const speso = document.getElementById(`speso_${rutId}_${serieIdx}`);
+
+  doneBtn.classList.toggle('checked', s.done);
+  snum.classList.toggle('done', s.done);
+  sreps.classList.toggle('filled', s.done);
+  speso.classList.toggle('filled', s.done);
+
+  const rut = state.rutinas.find(r=>r.id===rutId);
+  const log = state.logs[key];
+  const done = log.filter(x=>x.done).length;
+  const pct = Math.round((done/rut.series)*100);
+  document.getElementById(`prog_${rutId}`).style.width = pct+'%';
+}
+
+// ═══════ ADD ALUMNO ═══════
+function genPass() {
+  const c='ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#';
+  let p=''; for(let i=0;i<10;i++) p+=c[Math.floor(Math.random()*c.length)];
+  document.getElementById('new-pass').value=p;
+}
+function toggleDia(btn) { btn.classList.toggle('active'); }
+
+function addAlumno() {
+  const nombre = document.getElementById('new-nombre').value.trim();
+  const user = document.getElementById('new-user').value.trim();
+  const pass = document.getElementById('new-pass').value.trim();
+  const dias = [...document.querySelectorAll('#dias-selector .day-btn.active')].map(b=>({
+    'Lun':'Lunes','Mar':'Martes','Mié':'Miércoles','Jue':'Jueves','Vie':'Viernes','Sáb':'Sábado','Dom':'Domingo'
+  }[b.textContent]));
+  if (!nombre||!user||!pass) return;
+  state.alumnos.push({id:nextAluId++,nombre,user,pass,dias:dias.length?dias:['Lunes','Miércoles','Viernes']});
+  closeModal('modal-add-alumno');
+  renderCoach();
+}
+
+// ═══════ ADD RUTINA ═══════
+function openAddRutina() { openModal('modal-add-rutina'); }
+
+function addRutina() {
+  const dia=document.getElementById('rut-dia').value;
+  const grupo=document.getElementById('rut-grupo').value;
+  const ejercicio=document.getElementById('rut-ejercicio').value.trim();
+  const series=parseInt(document.getElementById('rut-series').value)||3;
+  const reps=parseInt(document.getElementById('rut-reps').value)||12;
+  const peso=parseFloat(document.getElementById('rut-peso').value)||0;
+  let video=document.getElementById('rut-video').value.trim();
+  if (video.includes('youtu')) {
+    const m=video.match(/[?&]v=([^&]+)|youtu\.be\/([^?]+)/);
+    if(m) video=m[1]||m[2];
+  }
+  const notas=document.getElementById('rut-notas').value.trim();
+  if(!ejercicio) return;
+  state.rutinas.push({id:nextRutId++,alumnoId:state.currentAlumnoId,dia,grupo,ejercicio,series,reps,peso,video,notas});
+  closeModal('modal-add-rutina');
+  const a=state.alumnos.find(x=>x.id===state.currentAlumnoId);
+  renderDetailRutinas(a);
+}
+
+// ═══════ MODALS ═══════
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m=>{
+  m.addEventListener('click',e=>{ if(e.target===m) m.classList.remove('open'); });
+});
+</script>
+</body>
+</html>
