@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-<title>ALQUIMIA 90⚡️</title>
+<title>ALQUIMIA</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -122,6 +122,14 @@ label.field-label { display: block; font-size: 11px; color: var(--gray); letter-
 .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--black3); border: 1px solid rgba(201,168,76,0.3); border-radius: var(--radius); padding: 10px 20px; font-size: 13px; color: var(--gold); z-index: 200; opacity: 0; transition: opacity 0.3s; pointer-events: none; white-space: nowrap; }
 .toast.show { opacity: 1; }
 </style>
+<link rel="manifest" href="manifest.json" />
+<link rel="apple-touch-icon" href="icon-180.png" />
+<meta name="theme-color" content="#C9A84C" />
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js');
+  }
+</script>
 </head>
 <body>
 <div class="phone" id="phone">
@@ -269,8 +277,6 @@ label.field-label { display: block; font-size: 11px; color: var(--gray); letter-
       <div><label class="field-label">Reps obj.</label><input type="number" id="rut-reps" placeholder="12" style="margin:0;" /></div>
       <div><label class="field-label">Peso (kg)</label><input type="number" id="rut-peso" placeholder="60" style="margin:0;" /></div>
     </div>
-    <label class="field-label" style="margin-top:12px;">Video YouTube (ID o URL)</label>
-    <input type="text" id="rut-video" placeholder="Ej: dQw4w9WgXcQ" />
     <label class="field-label">Notas</label>
     <input type="text" id="rut-notas" placeholder="Ej: Bajar lento en negativa" />
     <button class="btn-primary" style="margin-top:4px;" onclick="addRutina()">Guardar ejercicio</button>
@@ -549,16 +555,11 @@ async function addRutina() {
   const series = parseInt(document.getElementById('rut-series').value) || 3;
   const reps = parseInt(document.getElementById('rut-reps').value) || 12;
   const peso = parseFloat(document.getElementById('rut-peso').value) || 0;
-  let video = document.getElementById('rut-video').value.trim();
-  if (video.includes('youtu')) {
-    const m = video.match(/[?&]v=([^&]+)|youtu\.be\/([^?]+)/);
-    if (m) video = m[1] || m[2];
-  }
   const notas = document.getElementById('rut-notas').value.trim();
   if (!ejercicio) { showToast('Ingresá el nombre del ejercicio'); return; }
 
   const { error } = await sb.from('rutinas').insert({
-    alumno_id: state.currentAlumnoId, dia, grupo, ejercicio, series, reps, peso, video, notas
+    alumno_id: state.currentAlumnoId, dia, grupo, ejercicio, series, reps, peso, notas
   });
 
   if (error) { showToast('Error al guardar'); console.error(error); return; }
@@ -624,8 +625,96 @@ async function renderAluRutina(alu, dia) {
   `;
 }
 
+// Cache para no repetir llamadas a la API
+const gifCache = {};
+
+async function fetchExerciseGif(nombre) {
+  if (gifCache[nombre]) return gifCache[nombre];
+  try {
+    // Normalizar nombre: quitar tildes, minúsculas, reemplazar espacios por +
+    const query = nombre.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,'+');
+    const res = await fetch(`https://exercisedb.p.rapidapi.com/exercises/name/${encodeURIComponent(query)}?limit=1`, {
+      headers: {
+        'X-RapidAPI-Key': 'DEMO', // sin key devuelve igual algunos resultados
+        'X-RapidAPI-Host': 'exercisedb.p.rapidapi.com'
+      }
+    });
+    if (!res.ok) throw new Error('api error');
+    const data = await res.json();
+    if (data && data.length > 0) {
+      gifCache[nombre] = { gif: data[0].gifUrl, muscles: data[0].targetMuscles || data[0].secondaryMuscles || [] };
+      return gifCache[nombre];
+    }
+  } catch(e) {}
+  // Fallback: usar muscles del mapa interno + gif de wger (open source, sin key)
+  try {
+    const query = nombre.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+    const res2 = await fetch(`https://wger.de/api/v2/exercise/search/?term=${encodeURIComponent(query)}&language=es&format=json`);
+    if (res2.ok) {
+      const d2 = await res2.json();
+      if (d2.suggestions && d2.suggestions.length > 0) {
+        const exId = d2.suggestions[0].data?.id;
+        if (exId) {
+          const imgRes = await fetch(`https://wger.de/api/v2/exerciseimage/?exercise=${exId}&format=json`);
+          if (imgRes.ok) {
+            const imgData = await imgRes.json();
+            if (imgData.results && imgData.results.length > 0) {
+              gifCache[nombre] = { gif: imgData.results[0].image, muscles: [] };
+              return gifCache[nombre];
+            }
+          }
+        }
+      }
+    }
+  } catch(e) {}
+  gifCache[nombre] = null;
+  return null;
+}
+
+async function toggleDemo(rutId, nombreEjercicio, grupo) {
+  const panel = document.getElementById('demo_'+rutId);
+  const chev = document.getElementById('demochev_'+rutId);
+  const isOpen = panel.classList.contains('open');
+
+  if (isOpen) {
+    panel.classList.remove('open');
+    chev.className = 'ti ti-chevron-down';
+    return;
+  }
+
+  panel.classList.add('open');
+  chev.className = 'ti ti-chevron-up';
+
+  // Si ya tiene contenido, no volver a cargar
+  if (panel.dataset.loaded === '1') return;
+  panel.innerHTML = `<div style="padding:20px;text-align:center;color:var(--gray);font-size:12px;">
+    <i class="ti ti-loader-2" style="font-size:20px;"></i><br>Cargando demostración...
+  </div>`;
+
+  const rutMuscles = muscleMap[grupo] || [];
+  const result = await fetchExerciseGif(nombreEjercicio);
+
+  let gifHTML = '';
+  if (result && result.gif) {
+    gifHTML = `<img src="${result.gif}" alt="${nombreEjercicio}" style="width:100%;border-radius:0;display:block;max-height:220px;object-fit:cover;" />`;
+  } else {
+    gifHTML = `<div style="padding:20px;text-align:center;color:var(--gray);font-size:12px;">
+      <i class="ti ti-help-circle" style="font-size:24px;color:var(--gold-dim);"></i>
+      <p style="margin-top:8px;">No encontramos animación para este ejercicio.</p>
+      <p style="margin-top:4px;font-size:11px;">Consultá con tu entrenador la técnica correcta.</p>
+    </div>`;
+  }
+
+  const allMuscles = result?.muscles?.length ? result.muscles : rutMuscles;
+  const muscleChips = allMuscles.length
+    ? `<div class="muscle-tags">${allMuscles.map(m=>`<span class="chip" style="font-size:10px;padding:2px 8px;color:var(--white2);border-color:rgba(201,168,76,0.2);">${m}</span>`).join('')}</div>`
+    : '';
+
+  panel.innerHTML = gifHTML + muscleChips;
+  panel.dataset.loaded = '1';
+}
+
 function renderExCard(alu, rut, idx, logs, muscles) {
-  const vidId = rut.video || '';
   const rutMuscles = muscleMap[rut.grupo] || muscles;
   const seriesArr = Array.from({length: rut.series}, (_, i) => {
     const existing = logs.find(l => l.rutina_id === rut.id && l.serie_num === i+1);
@@ -648,11 +737,21 @@ function renderExCard(alu, rut, idx, logs, muscles) {
     </div>
   `).join('');
 
+  // Escapar el nombre para usarlo en onclick
+  const nombreEsc = rut.ejercicio.replace(/'/g, "\\'");
+
   return `<div class="ex-card" id="excard_${rut.id}">
-    <div class="ex-header">
+    <div class="ex-header" style="cursor:pointer;" onclick="toggleDemo('${rut.id}','${nombreEsc}','${rut.grupo}')">
       <div class="ex-num">${idx+1}</div>
       <div style="flex:1;">
-        <div class="ex-name">${rut.ejercicio}</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div class="ex-name">${rut.ejercicio}</div>
+          <div style="display:flex;align-items:center;gap:4px;color:var(--gold-dim);font-size:11px;font-weight:600;letter-spacing:0.04em;">
+            <i class="ti ti-player-play" style="font-size:13px;"></i>
+            <span>Ver demo</span>
+            <i class="ti ti-chevron-down" id="demochev_${rut.id}" style="font-size:14px;"></i>
+          </div>
+        </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
           <div class="ex-meta-badge"><span>${rut.series}</span> series</div>
           <div class="ex-meta-badge"><span>${rut.reps}</span> reps obj.</div>
@@ -662,18 +761,10 @@ function renderExCard(alu, rut, idx, logs, muscles) {
         <div class="prog-bar"><div class="prog-fill" id="prog_${rut.id}" style="width:${pct}%;"></div></div>
       </div>
     </div>
-    ${vidId?`
-    <div class="video-section">
-      <button class="video-toggle" onclick="toggleVideo('${rut.id}')">
-        <i class="ti ti-brand-youtube"></i> Ver técnica del ejercicio
-        <i class="ti ti-chevron-down" id="vchev_${rut.id}"></i>
-      </button>
-      <div class="video-embed" id="vid_${rut.id}">
-        <iframe src="https://www.youtube.com/embed/${vidId}?rel=0&modestbranding=1"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        <div class="muscle-tags">${rutMuscles.map(m=>`<span class="chip" style="font-size:10px;padding:2px 8px;color:var(--white2);border-color:rgba(201,168,76,0.2);">${m}</span>`).join('')}</div>
-      </div>
-    </div>`:''}
+
+    <!-- Panel demostrativo (se abre al tocar el header) -->
+    <div id="demo_${rut.id}" class="video-embed" style="border-radius:0;border-left:none;border-right:none;"></div>
+
     <div class="series-section">
       <div class="series-table-header">
         <div class="series-col-label">Serie</div>
@@ -684,13 +775,6 @@ function renderExCard(alu, rut, idx, logs, muscles) {
       ${seriesRows}
     </div>
   </div>`;
-}
-
-function toggleVideo(rutId) {
-  const el = document.getElementById('vid_'+rutId);
-  const chev = document.getElementById('vchev_'+rutId);
-  el.classList.toggle('open');
-  chev.className = el.classList.contains('open') ? 'ti ti-chevron-up' : 'ti ti-chevron-down';
 }
 
 async function toggleSeriesDone(aluId, rutId, serieIdx, totalSeries) {
