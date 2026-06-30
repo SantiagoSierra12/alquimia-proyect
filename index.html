@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-<title>ALQUIMIA</title>
+<title>ALQUIMIA 90⚡️</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -122,14 +122,6 @@ label.field-label { display: block; font-size: 11px; color: var(--gray); letter-
 .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--black3); border: 1px solid rgba(201,168,76,0.3); border-radius: var(--radius); padding: 10px 20px; font-size: 13px; color: var(--gold); z-index: 200; opacity: 0; transition: opacity 0.3s; pointer-events: none; white-space: nowrap; }
 .toast.show { opacity: 1; }
 </style>
-<link rel="manifest" href="manifest.json" />
-<link rel="apple-touch-icon" href="icon-180.png" />
-<meta name="theme-color" content="#C9A84C" />
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js');
-  }
-</script>
 </head>
 <body>
 <div class="phone" id="phone">
@@ -138,8 +130,8 @@ label.field-label { display: block; font-size: 11px; color: var(--gray); letter-
 <!-- LOGIN -->
 <div class="screen active" id="screen-login">
   <div class="logo-header">
-    <div class="logo-emblem"><i class="ti ti-flame"></i></div>
-    <div class="logo-name">Alquimia</div>
+    <div class="logo-emblem"><i class="ti ti-bolt"></i></div>
+    <div class="logo-name">Alquimia⚡️</div>
     <div class="logo-tagline">Transforma tu cuerpo · Eleva tu mente</div>
   </div>
   <div class="scroll-body" style="padding-bottom:24px;">
@@ -161,13 +153,13 @@ label.field-label { display: block; font-size: 11px; color: var(--gray); letter-
 </div>
 
 <!-- COACH -->
-<div class="screen" id="screen-coach">
+<div class="screen" id="screen-coach" style="height:100vh;">
   <div class="topbar">
     <div class="avatar">JL</div>
     <span class="topbar-title">Panel coach</span>
     <button class="btn-secondary" onclick="logout()" style="padding:6px 12px;font-size:12px;">Salir</button>
   </div>
-  <div class="scroll-body">
+  <div class="scroll-body" style="flex:1;overflow-y:auto;">
     <div class="content-pad" id="coach-main">
       <div class="stat-grid" id="coach-stats"></div>
       <div class="row" style="margin-bottom:12px;">
@@ -179,7 +171,7 @@ label.field-label { display: block; font-size: 11px; color: var(--gray); letter-
       <div class="card card-dark" style="padding:0 18px;" id="alumnos-list"><div class="loading"><i class="ti ti-loader-2"></i> Cargando...</div></div>
     </div>
   </div>
-  <div class="tab-bar">
+  <div class="tab-bar" style="flex-shrink:0;position:sticky;bottom:0;z-index:10;">
     <button class="tab active" id="tab-coach-alu" onclick="coachTab('alu')"><i class="ti ti-users"></i>Alumnos</button>
     <button class="tab" id="tab-coach-hist" onclick="coachTab('hist')"><i class="ti ti-chart-line"></i>Progreso</button>
     <button class="tab" id="tab-coach-creds" onclick="coachTab('creds')"><i class="ti ti-key"></i>Accesos</button>
@@ -283,10 +275,56 @@ label.field-label { display: block; font-size: 11px; color: var(--gray); letter-
   </div>
 </div>
 
+<!-- MODAL EDIT RUTINA -->
+<div class="modal-overlay" id="modal-edit-rutina">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="row" style="margin-bottom:16px;">
+      <p class="modal-title" style="margin:0;">Editar ejercicio</p>
+      <button class="btn-icon" onclick="closeModal('modal-edit-rutina')"><i class="ti ti-x"></i></button>
+    </div>
+    <input type="hidden" id="edit-rut-id" />
+    <label class="field-label">Día</label>
+    <select id="edit-rut-dia">
+      <option>Lunes</option><option>Martes</option><option>Miércoles</option>
+      <option>Jueves</option><option>Viernes</option><option>Sábado</option><option>Domingo</option>
+    </select>
+    <label class="field-label">Grupo muscular</label>
+    <select id="edit-rut-grupo">
+      <option>Pecho</option><option>Espalda</option><option>Hombros</option>
+      <option>Bíceps</option><option>Tríceps</option><option>Piernas</option>
+      <option>Glúteos</option><option>Abdomen</option><option>Full body</option>
+    </select>
+    <label class="field-label">Ejercicio</label>
+    <input type="text" id="edit-rut-ejercicio" placeholder="Ej: Press de banca" />
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+      <div><label class="field-label">Series</label><input type="number" id="edit-rut-series" placeholder="4" style="margin:0;" /></div>
+      <div><label class="field-label">Reps obj.</label><input type="number" id="edit-rut-reps" placeholder="12" style="margin:0;" /></div>
+      <div><label class="field-label">Peso (kg)</label><input type="number" id="edit-rut-peso" placeholder="60" style="margin:0;" /></div>
+    </div>
+    <label class="field-label" style="margin-top:12px;">Notas</label>
+    <input type="text" id="edit-rut-notas" placeholder="Ej: Bajar lento en negativa" />
+    <button class="btn-primary" style="margin-top:8px;" onclick="saveEditRutina()">Guardar cambios</button>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMAR ELIMINAR -->
+<div class="modal-overlay" id="modal-confirm-delete">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <p class="modal-title" style="margin-bottom:8px;">Eliminar ejercicio</p>
+    <p id="confirm-delete-msg" style="font-size:14px;color:var(--white2);margin-bottom:20px;"></p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <button class="btn-secondary" onclick="closeModal('modal-confirm-delete')" style="width:100%;text-align:center;">Cancelar</button>
+      <button onclick="executeDelete()" style="width:100%;padding:12px;background:#C0392B;border:none;border-radius:var(--radius);color:#fff;font-size:14px;font-weight:700;cursor:pointer;">Eliminar</button>
+    </div>
+  </div>
+</div>
+
 </div>
 
 <script>
-const COACH = { user:'coach', pass:'coach123' };
+const COACH = { user:'Blas.aguero', pass:'Alquimia01' };
 const diasSemana = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
 const hoy = diasSemana[new Date().getDay()];
 
@@ -462,7 +500,10 @@ async function coachTab(tab) {
         <div class="card card-dark" style="margin-bottom:10px;">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
             <div class="avatar">${a.nombre.split(' ').map(n=>n[0]).join('').slice(0,2)}</div>
-            <span style="font-size:14px;font-weight:600;">${a.nombre}</span>
+            <span style="font-size:14px;font-weight:600;flex:1;">${a.nombre}</span>
+            <button onclick="confirmDeleteAlumno('${a.id}','${a.nombre}')" style="background:rgba(192,57,43,0.1);border:1px solid rgba(192,57,43,0.3);border-radius:8px;padding:6px 8px;cursor:pointer;color:#E74C3C;font-size:14px;">
+              <i class="ti ti-trash"></i>
+            </button>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
             <div><p class="section-label" style="margin-bottom:2px;">Usuario</p><p style="font-size:13px;color:var(--gold);">@${a.usuario}</p></div>
@@ -500,8 +541,8 @@ function renderDetailRutinas(ruts) {
   cont.innerHTML = Object.entries(byDia).map(([dia, exs]) => `
     <p class="section-label" style="margin-top:4px;">${dia} · <span style="color:var(--white2);text-transform:none;font-size:12px;">${exs[0].grupo}</span></p>
     ${exs.map(e => `<div class="ex-card">
-      <div class="ex-header">
-        <div>
+      <div class="ex-header" style="align-items:center;">
+        <div style="flex:1;">
           <div class="ex-name">${e.ejercicio}</div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
             <div class="ex-meta-badge"><span>${e.series}</span> series</div>
@@ -509,6 +550,14 @@ function renderDetailRutinas(ruts) {
             <div class="ex-meta-badge"><span>${e.peso||'PC'}</span>${e.peso?' kg':''}</div>
           </div>
           ${e.notas?`<div class="ex-note" style="margin-top:6px;">${e.notas}</div>`:''}
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-left:10px;">
+          <button onclick="openEditRutina('${e.id}')" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);border-radius:8px;padding:6px 8px;cursor:pointer;color:var(--gold);font-size:13px;">
+            <i class="ti ti-pencil"></i>
+          </button>
+          <button onclick="confirmDeleteRutina('${e.id}','${e.ejercicio}')" style="background:rgba(192,57,43,0.1);border:1px solid rgba(192,57,43,0.3);border-radius:8px;padding:6px 8px;cursor:pointer;color:#E74C3C;font-size:13px;">
+            <i class="ti ti-trash"></i>
+          </button>
         </div>
       </div>
     </div>`).join('')}
@@ -815,6 +864,116 @@ async function toggleSeriesDone(aluId, rutId, serieIdx, totalSeries) {
   if (prog) prog.style.width = pct + '%';
   if (isNowDone) showToast('Serie registrada ✓');
 }
+
+// ═══ EDITAR RUTINA ═══
+let deleteRutinaId = null;
+
+async function openEditRutina(id) {
+  // Buscar el ejercicio en Supabase
+  const { data, error } = await sb.from('rutinas').select('*').eq('id', id).single();
+  if (error || !data) { showToast('Error al cargar ejercicio'); return; }
+  document.getElementById('edit-rut-id').value = data.id;
+  document.getElementById('edit-rut-dia').value = data.dia;
+  document.getElementById('edit-rut-grupo').value = data.grupo;
+  document.getElementById('edit-rut-ejercicio').value = data.ejercicio;
+  document.getElementById('edit-rut-series').value = data.series;
+  document.getElementById('edit-rut-reps').value = data.reps;
+  document.getElementById('edit-rut-peso').value = data.peso || '';
+  document.getElementById('edit-rut-notas').value = data.notas || '';
+  openModal('modal-edit-rutina');
+}
+
+async function saveEditRutina() {
+  const id = document.getElementById('edit-rut-id').value;
+  const dia = document.getElementById('edit-rut-dia').value;
+  const grupo = document.getElementById('edit-rut-grupo').value;
+  const ejercicio = document.getElementById('edit-rut-ejercicio').value.trim();
+  const series = parseInt(document.getElementById('edit-rut-series').value) || 3;
+  const reps = parseInt(document.getElementById('edit-rut-reps').value) || 12;
+  const peso = parseFloat(document.getElementById('edit-rut-peso').value) || 0;
+  const notas = document.getElementById('edit-rut-notas').value.trim();
+  if (!ejercicio) { showToast('Ingresá el nombre del ejercicio'); return; }
+
+  const { error } = await sb.from('rutinas').update({ dia, grupo, ejercicio, series, reps, peso, notas }).eq('id', id);
+  if (error) { showToast('Error al guardar'); console.error(error); return; }
+  closeModal('modal-edit-rutina');
+  showToast('Ejercicio actualizado ✓');
+  const ruts = await loadRutinas(state.currentAlumnoId);
+  renderDetailRutinas(ruts);
+}
+
+function confirmDeleteRutina(id, nombre) {
+  deleteRutinaId = id;
+  document.getElementById('confirm-delete-msg').textContent = `¿Eliminás "${nombre}"? Esta acción no se puede deshacer.`;
+  openModal('modal-confirm-delete');
+}
+
+// ═══ ELIMINAR ALUMNO ═══
+let deleteAlumnoId = null;
+
+function confirmDeleteAlumno(id, nombre) {
+  deleteAlumnoId = id;
+  document.getElementById('confirm-delete-msg').textContent = `¿Eliminás a "${nombre}"? Se borrarán también sus rutinas y registros. Esta acción no se puede deshacer.`;
+  openModal('modal-confirm-delete');
+}
+
+async function executeDelete() {
+  // Eliminar rutina si deleteRutinaId está seteado
+  if (deleteRutinaId) {
+    const { error } = await sb.from('rutinas').delete().eq('id', deleteRutinaId);
+    if (error) { showToast('Error al eliminar'); console.error(error); return; }
+    closeModal('modal-confirm-delete');
+    showToast('Ejercicio eliminado');
+    deleteRutinaId = null;
+    const ruts = await loadRutinas(state.currentAlumnoId);
+    renderDetailRutinas(ruts);
+    return;
+  }
+  // Eliminar alumno si deleteAlumnoId está seteado
+  if (deleteAlumnoId) {
+    // Borrar logs primero
+    await sb.from('logs_series').delete().eq('alumno_id', deleteAlumnoId);
+    // Borrar rutinas
+    await sb.from('rutinas').delete().eq('alumno_id', deleteAlumnoId);
+    // Borrar alumno
+    const { error } = await sb.from('alumnos').delete().eq('id', deleteAlumnoId);
+    if (error) { showToast('Error al eliminar'); console.error(error); return; }
+    closeModal('modal-confirm-delete');
+    showToast('Alumno eliminado');
+    deleteAlumnoId = null;
+    coachTab('creds');
+    return;
+  }
+}
+
+
+// ═══ SWIPE BACK ═══
+(function() {
+  // Pantallas con acción de "volver"
+  const swipeScreens = {
+    'screen-alumno-detail': () => { goScreen('screen-coach'); coachTab('alu'); },
+  };
+
+  let touchStartX = 0;
+  let touchStartY = 0;
+
+  document.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = Math.abs(e.changedTouches[0].clientY - touchStartY);
+    // Swipe derecha: dx > 60px, más horizontal que vertical
+    if (dx > 60 && dy < 80) {
+      const activeScreen = document.querySelector('.screen.active');
+      if (activeScreen && swipeScreens[activeScreen.id]) {
+        swipeScreens[activeScreen.id]();
+      }
+    }
+  }, { passive: true });
+})();
 
 // ═══ INIT ═══
 async function init() {
